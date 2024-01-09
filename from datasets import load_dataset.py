@@ -1,12 +1,5 @@
 from datasets import load_dataset
-
-dataset = load_dataset("mstz/heart_failure")
- 
-data = dataset["train"]
-print(data)
-
 import numpy as np
-from datasets import load_dataset
 
 # Cargar el dataset
 dataset = load_dataset("mstz/heart_failure")
