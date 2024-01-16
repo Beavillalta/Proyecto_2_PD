@@ -16,3 +16,5 @@ promedio_edad = np.mean(edades_np)
 
 # Imprimir el resultado
 print("El promedio de edad de las personas participantes en el estudio es:", promedio_edad)
+
+#Parte 2
