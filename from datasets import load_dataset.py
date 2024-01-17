@@ -39,6 +39,6 @@ edad_p_round_sobrevivientes =round(promedio_edad_sobrevivientes,1)
 print("Promedio de edad de los fallecidos:", edad_p_round_fallecidos)
 print("Promedio de edad de los sobrevivientes:", edad_p_round_sobrevivientes)
 
-#Parte_3
+
 
  
