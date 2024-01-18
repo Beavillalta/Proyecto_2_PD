@@ -41,4 +41,24 @@ print("Promedio de edad de los sobrevivientes:", edad_p_round_sobrevivientes)
 
 #Parte_3 Calculando analíticas simples
 
+# 1Verificar que los tipos de datos son correctos en cada colúmna (por ejemplo que no existan colúmnas numéricas en formato de cadena).
 
+# Mostrar los tipos de datos actuales en cada columna
+print("Tipos de datos antes de la verificación:")
+print(df.dtypes)
+
+# Verificar y corregir los tipos de datos
+# Asegurarte de que las columnas numéricas están en formato numérico:
+columnas_numericas = df.select_dtypes(include=['int', 'float']).columns
+df[columnas_numericas] = df[columnas_numericas].apply(pd.to_numeric, errors='coerce')
+
+# Mostrar los tipos de datos después de la verificación
+print("\nTipos de datos después de la verificación:")
+print(df.dtypes)
+
+ #Calcular la cantidad de hombres fumadores vs mujeres fumadoras (usando agregaciones en Pandas).
+cantidad_hombres_fumadores = df[(df['is_male'] == 1) & (df['is_smoker'] == 1)].shape[0]
+cantidad_mujeres_fumadoras = df[(df['is_male'] == 0) & (df['is_smoker'] == 1)].shape[0]
+
+print("Cantidad de hombres fumadores:", cantidad_hombres_fumadores)
+print("Cantidad de mujeres fumadoras:", cantidad_mujeres_fumadoras)
