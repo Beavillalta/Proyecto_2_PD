@@ -62,3 +62,33 @@ cantidad_mujeres_fumadoras = df[(df['is_male'] == 0) & (df['is_smoker'] == 1)].s
 
 print("Cantidad de hombres fumadores:", cantidad_hombres_fumadores)
 print("Cantidad de mujeres fumadoras:", cantidad_mujeres_fumadoras)
+
+#Parte 4 del Proyecto: Procesando información en bruto
+#Realiza un GET request para descargarlos y escribe la respuesta como un archivo de texto plano con extensión csv (no necesitas pandas para esto, sólo manipulación de archivos nativa de Python)
+
+import requests
+
+def descargar_y_guardar_como_csv(url, nombre_archivo):
+    try:
+        # Realizar un GET request para descargar los datos
+        respuesta = requests.get(url)
+        respuesta.raise_for_status()  # Lanza una excepción si la respuesta tiene un código de estado diferente de 200
+
+        # Guardar la respuesta en un archivo CSV
+        with open(nombre_archivo, 'w', encoding='utf-8') as archivo:
+            archivo.write(respuesta.text)
+
+        print(f"Los datos fueron descargados exitosamente y guardados en {nombre_archivo}.")
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error al realizar la solicitud: {e}")
+
+# Ejemplo de uso
+url_datos = "https://huggingface.co/datasets/mstz/heart_failure/raw/main/heart_failure_clinical_records_dataset.csv"
+nombre_archivo_csv = "datos_descargados.csv"
+
+descargar_y_guardar_como_csv(url_datos, nombre_archivo_csv)
+
+
+
+
