@@ -89,6 +89,45 @@ nombre_archivo_csv = "datos_descargados.csv"
 
 descargar_y_guardar_como_csv(url_datos, nombre_archivo_csv)
 
+# Parte 5 del Proyecto: Limpieza y preparación de datos
+
+import pandas as pd
+
+def limpiar_y_preparar_datos(dataframe):
+    # Verificar valores faltantes
+    if dataframe.isnull().any().any():
+        print("Existen valores faltantes en el conjunto de datos.")
+
+    # Verificar filas duplicadas
+    if dataframe.duplicated().any():
+        print("Existen filas duplicadas. Eliminando duplicados.")
+        dataframe.drop_duplicates(inplace=True)
+
+    # Eliminar directamente filas con valores atípicos en columnas numéricas
+    for columna in dataframe.select_dtypes(include='number').columns:
+        Q1 = dataframe[columna].quantile(0.25)
+        Q3 = dataframe[columna].quantile(0.75)
+        IQR = Q3 - Q1
+        valores_atipicos = (dataframe[columna] < (Q1 - 1.5 * IQR)) | (dataframe[columna] > (Q3 + 1.5 * IQR))
+        dataframe = dataframe[~valores_atipicos]
+
+    # Crear columna de categorías por edades
+    dataframe['Categoria_age'] = pd.cut(dataframe['age'], bins=[0, 12, 19, 39, 59, float('inf')],
+                                         labels=['Niño', 'Adolescente', 'Jóvenes adulto', 'Adulto', 'Adulto mayor'])
+
+    # Guardar el resultado como CSV
+    dataframe.to_csv('datos_limpios.csv', index=False)
+
+    print("Proceso de limpieza y preparación de datos completado. Resultados guardados en 'datos_limpios.csv'.")
+
+# Encapsula toda la lógica anterior en una función que reciba un dataframe como entrada.
+nombre_archivo_csv = "datos_descargados.csv"
+dataframe = pd.read_csv(nombre_archivo_csv)
+
+# Llamar a la función para limpiar y preparar los datos
+limpiar_y_preparar_datos(dataframe)
+
+
 
 
 
