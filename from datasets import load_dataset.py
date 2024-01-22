@@ -127,6 +127,10 @@ dataframe = pd.read_csv(nombre_archivo_csv)
 # Llamar a la función para limpiar y preparar los datos
 limpiar_y_preparar_datos(dataframe)
 
+# Parte 6 del Proyecto: Automatizando el proceso
+
+
+
 
 
 
