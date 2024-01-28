@@ -6,35 +6,57 @@ from io import StringIO
 import requests
 import numpy as np
 import seaborn as sns  
+from sklearn.manifold import TSNE
+import plotly.graph_objects as go
 
 df = pd.read_csv("datos_procesados.csv")
  
 
-# Parte 8 del proyecto 
+# Parte 9 del proyecto 
 
-sns.set(style="whitegrid")
-fig, axs = plt.subplots(2, 2, figsize=(10, 8))
+# Obtener el nombre de las columnas que no son numéricas
+columnas_no_numericas = df.select_dtypes(exclude=['number']).columns
 
-def plot_pie(ax, data, labels_map, title):
-    values = data.value_counts()
-    labels = [labels_map[x] for x in values.index]
-    ax.pie(values, labels=labels, autopct='%1.1f%%', startangle=90, colors=sns.color_palette('pastel'))
-    ax.set_title(title)
+# Eliminar las columnas no numéricas del DataFrame
+df = df.drop(columns=columnas_no_numericas)
 
-labels_map_anemicos = {0: 'No', 1: 'Si'}
-plot_pie(axs[0, 0], df['anaemia'], labels_map_anemicos, 'Anemicos')
+# Paso 1: Eliminar la columna objetivo y convertir a array
+X = df.drop(columns=['DEATH_EVENT', 'age']).values
 
-labels_map_diabetes = {0: 'No', 1: 'Si'}
-plot_pie(axs[0, 1], df['diabetes'], labels_map_diabetes, 'Diabeticos')
+# Paso 2: Exportar un array unidimensional de la columna objetivo
+y = df['DEATH_EVENT'].values
 
-labels_map_fumador = {0: 'No', 1: 'Si'}
-plot_pie(axs[1, 0], df['smoking'], labels_map_fumador, 'Fumadores')
+# Paso 3: Ejecutar el algoritmo t-SNE
+X_embedded = TSNE(
+    n_components=3,
+    learning_rate='auto',
+    init='random',
+    perplexity=3
+).fit_transform(X)
 
-labels_map_muertos = {0: 'No', 1: 'Si'}
-plot_pie(axs[1, 1], df['DEATH_EVENT'], labels_map_muertos, 'Fallecidos')
+# Paso 4: Crear un gráfico de dispersión 3D con Plotly
+fig = go.Figure()
 
-plt.subplots_adjust(wspace=0.4, hspace=0.4)
-fig.suptitle('Diagramas de Torta por Característica', fontsize=16)
+for label in set(y):
+    indices = y == label
+    scatter = go.Scatter3d(
+        x=X_embedded[indices, 0],
+        y=X_embedded[indices, 1],
+        z=X_embedded[indices, 2],
+        mode='markers',
+        marker=dict(size=8, opacity=0.6),
+        name=f'Clase {label}'
+    )
+    fig.add_trace(scatter)
 
-fig.savefig('graficos_tortas.png')
-plt.show()
+# Configuraciones adicionales del diseño
+fig.update_layout(scene=dict(
+                    xaxis_title='Dimensión 1',
+                    yaxis_title='Dimensión 2',
+                    zaxis_title='Dimensión 3'),
+                    width=800, height=800,
+                    margin=dict(l=0, r=0, b=0, t=0))
+
+# Guardar o mostrar la visualización
+fig.write_html('scatter_3d_plotly.html')  # Puedes guardar el gráfico en un archivo HTML
+# fig.show()  # O mostrarlo directamente en el entorno de ejecución
